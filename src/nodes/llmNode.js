@@ -1,34 +1,37 @@
 // llmNode.js
 
-import { Handle, Position } from 'reactflow';
+import { Handle, Position } from "reactflow";
+import styles from "./llmNode.module.css";
 
 export const LLMNode = ({ id, data }) => {
-
   return (
-    <div style={{width: 200, height: 80, border: '1px solid black'}}>
+    <div className={styles["container"]}>
       <Handle
+        className={styles["target-handle"]}
         type="target"
         position={Position.Left}
         id={`${id}-system`}
-        style={{top: `${100/3}%`}}
+        style={{ top: `${100 / 3}%` }}
       />
       <Handle
+        className={styles["target-handle"]}
         type="target"
         position={Position.Left}
         id={`${id}-prompt`}
-        style={{top: `${200/3}%`}}
+        style={{ top: `${200 / 3}%` }}
       />
-      <div>
+      <div className={styles["heading"]}>
         <span>LLM</span>
       </div>
-      <div>
+      <div className={styles["info"]}>
         <span>This is a LLM.</span>
       </div>
       <Handle
+        className={styles["source-handle"]}
         type="source"
         position={Position.Right}
         id={`${id}-response`}
       />
     </div>
   );
-}
+};

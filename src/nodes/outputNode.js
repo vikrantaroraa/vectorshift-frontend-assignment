@@ -1,11 +1,14 @@
 // outputNode.js
 
-import { useState } from 'react';
-import { Handle, Position } from 'reactflow';
+import { useState } from "react";
+import { Handle, Position } from "reactflow";
+import styles from "./outputNode.module.css";
 
 export const OutputNode = ({ id, data }) => {
-  const [currName, setCurrName] = useState(data?.outputName || id.replace('customOutput-', 'output_'));
-  const [outputType, setOutputType] = useState(data.outputType || 'Text');
+  const [currName, setCurrName] = useState(
+    data?.outputName || id.replace("customOutput-", "output_")
+  );
+  const [outputType, setOutputType] = useState(data.outputType || "Text");
 
   const handleNameChange = (e) => {
     setCurrName(e.target.value);
@@ -16,26 +19,23 @@ export const OutputNode = ({ id, data }) => {
   };
 
   return (
-    <div style={{width: 200, height: 80, border: '1px solid black'}}>
+    <div className={styles["container"]}>
       <Handle
+        className={styles["target-handle"]}
         type="target"
         position={Position.Left}
         id={`${id}-value`}
       />
-      <div>
+      <div className={styles["heading"]}>
         <span>Output</span>
       </div>
-      <div>
-        <label>
-          Name:
-          <input 
-            type="text" 
-            value={currName} 
-            onChange={handleNameChange} 
-          />
+      <div className={styles["node-body"]}>
+        <label className={styles["node-data"]}>
+          <span>Name</span>
+          <input type="text" value={currName} onChange={handleNameChange} />
         </label>
-        <label>
-          Type:
+        <label className={styles["node-data"]}>
+          <span>Type</span>
           <select value={outputType} onChange={handleTypeChange}>
             <option value="Text">Text</option>
             <option value="File">Image</option>
@@ -44,4 +44,4 @@ export const OutputNode = ({ id, data }) => {
       </div>
     </div>
   );
-}
+};
