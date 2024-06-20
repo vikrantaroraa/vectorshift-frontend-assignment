@@ -96,10 +96,10 @@ export const PipelineUI = () => {
         ref={reactFlowWrapper}
         style={{
           width: "100wv",
-          height: "70vh",
+          height: "100%",
           border: "1px solid #2c2c2c",
           marginBottom: "12px",
-          borderRadius: 6,
+          borderRadius: 2,
         }}
       >
         <ReactFlow
