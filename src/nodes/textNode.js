@@ -6,30 +6,58 @@ import styles from "./textNode.module.css";
 
 export const TextNode = ({ id, data }) => {
   const [currText, setCurrText] = useState(data?.text || "{{input}}");
+  const [dynamicSourceHandleCount, setDynamicSourceHandleCount] = useState(0);
   const textareaRef = useRef();
+  const pattern = /\{\{\w+\}\}/g;
 
-  const handleTextChange = (e) => {
-    setCurrText(e.target.value);
+  const addDynamicNode = (textareaValue) => {
+    const matches = textareaValue.match(pattern);
+    // console.log("currText & matches: ", textareaValue, matches);
+    if (matches !== null) {
+      setDynamicSourceHandleCount(matches.length);
+    } else if (matches === null) {
+      setDynamicSourceHandleCount(0);
+    }
   };
 
-  useEffect(() => {
-    const textareaElement = textareaRef.current;
-    console.log(textareaElement);
-    textareaElement.setAttribute(
-      "style",
-      "height:" + textareaElement.scrollHeight + "px;overflow-y:hidden;"
-    );
-    textareaElement.addEventListener("input", autoGrow, false);
-  }, []);
+  const handleTextChange = (e) => {
+    const textareaElement = e.target;
+    const currentText = e.target.value;
+    console.log("ye hai event ka target: ", e.target);
+    setCurrText(currentText);
 
-  const autoGrow = () => {
-    const textareaElement = textareaRef.current;
+    // adding target nodes on text change
+    addDynamicNode(currentText);
+
+    // adding auto-grow height with increasing text content
     textareaElement.style.height = "auto";
     textareaElement.style.height = textareaElement.scrollHeight + "px";
   };
 
+  useEffect(() => {
+    const textareaElement = textareaRef.current;
+    textareaElement.setAttribute(
+      "style",
+      "height:" + textareaElement.scrollHeight + "px;overflow-y:hidden;"
+    );
+  }, []);
+
+  useEffect(() => {
+    addDynamicNode(currText);
+  }, []);
+
   return (
     <div className={styles["container"]}>
+      {Array.from({ length: dynamicSourceHandleCount }).map((_, index) => (
+        <Handle
+          key={index}
+          type="target"
+          position={Position.Left}
+          id={`handle-${index}`}
+          className={styles["target-handle"]}
+          style={{ top: 20 + index * 30 }}
+        />
+      ))}
       <div className={styles["heading"]}>
         <span>Text</span>
       </div>
