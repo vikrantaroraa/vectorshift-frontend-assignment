@@ -2,6 +2,7 @@ import { PipelineToolbar } from "./toolbar";
 import { PipelineUI } from "./ui";
 import { SubmitButton } from "./submit";
 import styles from "./App.module.css";
+import CreateNodeForm from "./CreateNodeForm";
 
 function App() {
   return (
@@ -13,6 +14,8 @@ function App() {
         <PipelineToolbar />
         <hr />
         <SubmitButton />
+        <hr />
+        <CreateNodeForm />
       </div>
     </div>
   );

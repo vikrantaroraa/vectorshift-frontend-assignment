@@ -6,7 +6,7 @@ import styles from "./textNode.module.css";
 
 export const TextNode = ({ id, data }) => {
   const [currText, setCurrText] = useState(data?.text || "{{input}}");
-  const [dynamicSourceHandleCount, setDynamicSourceHandleCount] = useState(0);
+  const [dynamicTargetHandleCount, setDynamicTargetHandleCount] = useState(0);
   const textareaRef = useRef();
   const pattern = /\{\{\w+\}\}/g;
 
@@ -14,9 +14,9 @@ export const TextNode = ({ id, data }) => {
     const matches = textareaValue.match(pattern);
     // console.log("currText & matches: ", textareaValue, matches);
     if (matches !== null) {
-      setDynamicSourceHandleCount(matches.length);
+      setDynamicTargetHandleCount(matches.length);
     } else if (matches === null) {
-      setDynamicSourceHandleCount(0);
+      setDynamicTargetHandleCount(0);
     }
   };
 
@@ -48,7 +48,7 @@ export const TextNode = ({ id, data }) => {
 
   return (
     <div className={styles["container"]}>
-      {Array.from({ length: dynamicSourceHandleCount }).map((_, index) => (
+      {Array.from({ length: dynamicTargetHandleCount }).map((_, index) => (
         <Handle
           key={index}
           type="target"

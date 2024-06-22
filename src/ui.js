@@ -12,6 +12,7 @@ import { OutputNode } from "./nodes/outputNode";
 import { TextNode } from "./nodes/textNode";
 
 import "reactflow/dist/style.css";
+import BlueprintNode from "./nodes/blueprintNode";
 
 const gridSize = 20;
 const proOptions = { hideAttribution: true };
@@ -20,6 +21,7 @@ const nodeTypes = {
   llm: LLMNode,
   customOutput: OutputNode,
   text: TextNode,
+  bluePrint: BlueprintNode,
 };
 
 const selector = (state) => ({
@@ -60,6 +62,8 @@ export const PipelineUI = () => {
           event.dataTransfer.getData("application/reactflow")
         );
         const type = appData?.nodeType;
+        const nodeInfo = appData?.nodeInfo;
+        const newNodeType = appData?.newNodeType;
 
         // check if the dropped element is valid
         if (typeof type === "undefined" || !type) {
@@ -72,12 +76,24 @@ export const PipelineUI = () => {
         });
 
         const nodeID = getNodeID(type);
-        const newNode = {
-          id: nodeID,
-          type,
-          position,
-          data: getInitNodeData(nodeID, type),
-        };
+        let newNode;
+
+        if (type === "bluePrint") {
+          newNode = {
+            id: nodeID,
+            type,
+            position,
+            data: { typeOfNode: newNodeType, nodeInfo }, //sending typeOfNode and nodeInfo through data as they are not being accepted as individual props
+          };
+        } else {
+          newNode = {
+            id: nodeID,
+            type,
+            position,
+            data: getInitNodeData(nodeID, type),
+          };
+        }
+        console.log("ye hai add hone wala node: ", newNode);
 
         addNode(newNode);
       }
