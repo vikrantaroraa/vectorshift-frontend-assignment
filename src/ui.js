@@ -3,7 +3,12 @@
 // --------------------------------------------------
 
 import { useState, useRef, useCallback } from "react";
-import ReactFlow, { Controls, Background, MiniMap } from "reactflow";
+import ReactFlow, {
+  Controls,
+  Background,
+  MiniMap,
+  ReactFlowProvider,
+} from "reactflow";
 import { useStore } from "./store";
 import { shallow } from "zustand/shallow";
 import { InputNode } from "./nodes/inputNode";
@@ -13,6 +18,7 @@ import { TextNode } from "./nodes/textNode";
 
 import "reactflow/dist/style.css";
 import BlueprintNode from "./nodes/blueprintNode";
+import styles from "./ui.module.css";
 
 const gridSize = 20;
 const proOptions = { hideAttribution: true };
@@ -46,6 +52,11 @@ export const PipelineUI = () => {
     onEdgesChange,
     onConnect,
   } = useStore(selector, shallow);
+
+  // this key is used to save and get the flow to and from the localStorage respectively. This flow data which
+  // contains the info about all the nodes, edges and viewport as well is then sent to the FastAPI backend
+  // server
+  const flowKey = "pipeline-flow";
 
   const getInitNodeData = (nodeID, type) => {
     let nodeData = { id: nodeID, nodeType: `${type}` };
@@ -101,42 +112,47 @@ export const PipelineUI = () => {
     [reactFlowInstance]
   );
 
+  // save the current flow - provides info about the nodes, edges and position of all nodes on the canvas
+  const onSave = useCallback(() => {
+    if (reactFlowInstance) {
+      const flow = reactFlowInstance.toObject();
+      console.log("this is the current flow: ", flow);
+      localStorage.setItem(flowKey, JSON.stringify(flow));
+    }
+  }, [reactFlowInstance]);
+
   const onDragOver = useCallback((event) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = "move";
   }, []);
 
   return (
-    <>
-      <div
-        ref={reactFlowWrapper}
-        style={{
-          width: "100wv",
-          height: "100%",
-          border: "1px solid #2c2c2c",
-          marginBottom: "12px",
-          borderRadius: 2,
-        }}
-      >
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          onDrop={onDrop}
-          onDragOver={onDragOver}
-          onInit={setReactFlowInstance}
-          nodeTypes={nodeTypes}
-          proOptions={proOptions}
-          snapGrid={[gridSize, gridSize]}
-          connectionLineType="smoothstep"
-        >
-          <Background color="#aaa" gap={gridSize} />
-          <Controls />
-          <MiniMap />
-        </ReactFlow>
+    <div className={styles["main-container"]}>
+      <div className={styles["save-button-container"]}>
+        <button onClick={onSave}>Save Flow</button>
       </div>
-    </>
+      <ReactFlowProvider>
+        <div ref={reactFlowWrapper} className={styles["canvas"]}>
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+            onInit={setReactFlowInstance}
+            nodeTypes={nodeTypes}
+            proOptions={proOptions}
+            snapGrid={[gridSize, gridSize]}
+            connectionLineType="smoothstep"
+          >
+            <Background color="#aaa" gap={gridSize} />
+            <Controls />
+            <MiniMap />
+          </ReactFlow>
+        </div>
+      </ReactFlowProvider>
+    </div>
   );
 };

@@ -5,6 +5,11 @@
   gap: 10px;
 }
 
+.container button {
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
 .nodes-container {
   display: flex;
   justify-content: space-evenly;
