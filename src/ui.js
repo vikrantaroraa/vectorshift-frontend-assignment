@@ -19,6 +19,8 @@ import { TextNode } from "./nodes/textNode";
 import "reactflow/dist/style.css";
 import BlueprintNode from "./nodes/blueprintNode";
 import styles from "./ui.module.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const gridSize = 20;
 const proOptions = { hideAttribution: true };
@@ -112,12 +114,25 @@ export const PipelineUI = () => {
     [reactFlowInstance]
   );
 
+  const notifyFlowSavedSuccessfully = () =>
+    toast.success("Flow saved successfully", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+
   // save the current flow - provides info about the nodes, edges and position of all nodes on the canvas
   const onSave = useCallback(() => {
     if (reactFlowInstance) {
       const flow = reactFlowInstance.toObject();
       console.log("this is the current flow: ", flow);
       localStorage.setItem(flowKey, JSON.stringify(flow));
+      notifyFlowSavedSuccessfully();
     }
   }, [reactFlowInstance]);
 
@@ -153,6 +168,7 @@ export const PipelineUI = () => {
           </ReactFlow>
         </div>
       </ReactFlowProvider>
+      <ToastContainer />
     </div>
   );
 };

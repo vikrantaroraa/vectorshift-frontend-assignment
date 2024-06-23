@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import styles from "./index.module.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const CreateNodeForm = () => {
   const [formData, setFormData] = useState({
@@ -16,9 +18,25 @@ const CreateNodeForm = () => {
     });
   };
 
-  const saveAddressToLocalStorage = (event) => {
+  const nodeSavedSuccessfully = () =>
+    toast.success(
+      "Node saved successfully, click on `Get Latest Nodes` to show it",
+      {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      }
+    );
+
+  const saveNodeToLocalStorage = (event) => {
     event.preventDefault();
     localStorage.setItem("newNodeData", JSON.stringify(formData));
+    nodeSavedSuccessfully();
   };
 
   return (
@@ -46,8 +64,9 @@ const CreateNodeForm = () => {
             <option value="newText">New Text</option>
           </select>
         </div>
-        <button onClick={saveAddressToLocalStorage}>Add Node</button>
+        <button onClick={saveNodeToLocalStorage}>Add Node</button>
       </form>
+      <ToastContainer />
     </div>
   );
 };
